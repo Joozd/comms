@@ -33,18 +33,14 @@ import java.net.UnknownHostException
 import javax.net.ssl.SSLSocketFactory
 import kotlin.coroutines.CoroutineContext
 
+/**
+ * Client sends data to server. Data is sent in a [Dispatchers.IO] Coroutine so safe to use.
+ */
 class Client private constructor(): Closeable, CoroutineScope {
     private val socket = SSLSocketFactory.getDefault().createSocket(
         SERVER_URL,
         SERVER_PORT
     )
-    /**
-     * The context of this scope.
-     * Context is encapsulated by the scope and used for implementation of coroutine builders that are extensions on the scope.
-     * Accessing this property in general code is not recommended for any purposes except accessing the [Job] instance for advanced usages.
-     *
-     * By convention, should contain an instance of a [Job] to enforce structured concurrency.
-     */
     override val coroutineContext: CoroutineContext = Dispatchers.IO + Job()
 
     /**
@@ -172,7 +168,7 @@ class Client private constructor(): Closeable, CoroutineScope {
      *  [CommsResult.CONNECTION_REFUSED] if connection could not be established by remote host
      *  [CommsResult.SOCKET_ERROR] if there is an error creating or accessing a Socket
      */
-    suspend fun sendRequest(request: String, extraData: ByteArray? = null, initializing: Boolean = false): CommsResult = if (alive)
+    suspend fun sendRequest(request: String, extraData: ByteArray? = null): CommsResult = if (alive)
         sendToServer(Packet(wrap(request) + (extraData ?: ByteArray(0))))
     else CommsResult.CLIENT_NOT_ALIVE
 
@@ -196,7 +192,6 @@ class Client private constructor(): Closeable, CoroutineScope {
             }
         }
     }
-
 
     companion object{
         const val SERVER_URL = "joozd.nl"
