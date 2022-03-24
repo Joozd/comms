@@ -37,10 +37,12 @@ import kotlin.coroutines.CoroutineContext
  * Client sends data to server. Data is sent in a [Dispatchers.IO] Coroutine so safe to use.
  */
 class Client private constructor(): Closeable, CoroutineScope {
-    private val socket = SSLSocketFactory.getDefault().createSocket(
-        SERVER_URL,
-        SERVER_PORT
-    )
+    private val socket = try {
+        SSLSocketFactory.getDefault().createSocket(
+            SERVER_URL,
+            SERVER_PORT
+        )
+    } catch (e: Exception) { null }
     override val coroutineContext: CoroutineContext = Dispatchers.IO + Job()
 
     /**
