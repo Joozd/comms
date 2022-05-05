@@ -201,7 +201,7 @@ class Client private constructor(
 
     companion object{
         const val MAX_MESSAGE_SIZE = Int.MAX_VALUE-1
-        const val BUFFER_SIZE: Int = 65535
+        private const val BUFFER_SIZE: Int = 65535
 
         /**
          * Returns an open instance if it is available
