@@ -36,7 +36,11 @@ import kotlin.coroutines.CoroutineContext
 /**
  * Client sends data to server. Data is sent in a [Dispatchers.IO] Coroutine so safe to use.
  */
-class Client private constructor(private val server: String, private val port: Int): Closeable, CoroutineScope {
+class Client private constructor(
+    private val server: String,
+    private val port: Int,
+    var bufferSize: Int
+): Closeable, CoroutineScope {
     private val socket = try {
         SSLSocketFactory.getDefault().createSocket(
             server,
@@ -197,12 +201,13 @@ class Client private constructor(private val server: String, private val port: I
 
     companion object{
         const val MAX_MESSAGE_SIZE = Int.MAX_VALUE-1
+        const val BUFFER_SIZE: Int = 65535
 
         /**
          * Returns an open instance if it is available
          * Client will be locked until starting timeOut()
          */
-        suspend fun getInstance(server: String, port: Int): Client = withContext(Dispatchers.IO) { Client(server, port).initialize() }
+        suspend fun getInstance(server: String, port: Int, bufferSize: Int = BUFFER_SIZE): Client = withContext(Dispatchers.IO) { Client(server, port, bufferSize).initialize() }
     }
 
 
