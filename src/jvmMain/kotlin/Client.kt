@@ -36,9 +36,10 @@ import kotlin.coroutines.CoroutineContext
 /**
  * Client sends data to server. Data is sent in a [Dispatchers.IO] Coroutine so safe to use.
  */
+@Suppress("unused")
 class Client private constructor(
-    private val server: String,
-    private val port: Int,
+    server: String,
+    port: Int,
     var bufferSize: Int
 ): Closeable, CoroutineScope {
     private val socket = try {
@@ -130,7 +131,7 @@ class Client private constructor(
      * @param f: listener with a 0-100 percentage completed value
      */
     private fun getInput(inputStream: BufferedInputStream, f: (Int) -> Unit = {}): ByteArray {
-        val buffer = ByteArray(8192)
+        val buffer = ByteArray(bufferSize)
         val header = ByteArray(Packet.HEADER_LENGTH + 4)
 
         //Read the header as it comes in, or fail trying.
@@ -207,7 +208,16 @@ class Client private constructor(
          * Returns an open instance if it is available
          * Client will be locked until starting timeOut()
          */
-        suspend fun getInstance(server: String, port: Int, bufferSize: Int = BUFFER_SIZE): Client = withContext(Dispatchers.IO) { Client(server, port, bufferSize).initialize() }
+        suspend fun getInstance(server: String, port: Int, bufferSize: Int = BUFFER_SIZE): Client =
+            withContext(Dispatchers.IO) {
+                Client(getServerName(server), port, bufferSize).initialize()
+            }
+
+        // return "example.com" on both "example.com" and "https://example.com/"
+        private fun getServerName(server: String) =
+            server
+                .replace("https://", "")
+                .filter { it != '/' }
     }
 
 
