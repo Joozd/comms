@@ -60,7 +60,9 @@ class Client private constructor(
 
     private suspend fun initialize(): Client{
         socket?.let{
-            alive = sendToServer(Packet(wrap(CommsKeywords.HELLO))) == CommsResult.OK
+            alive = sendToServer(Packet(wrap(CommsKeywords.HELLO))).also{
+                println("Handshake result: $it")
+            } == CommsResult.OK
         }
         return this
     }
