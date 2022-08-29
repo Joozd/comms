@@ -85,7 +85,7 @@ class P2PSession: CoroutineScope, Closeable {
     }
 
     companion object{
-        private const val BUFFER_SIZE = 1.shl(16)
+        private const val BUFFER_SIZE = Client.BUFFER_SIZE
     }
 
     /**
