@@ -6,6 +6,7 @@ import javax.net.ssl.KeyManagerFactory
 import javax.net.ssl.SSLContext
 import javax.net.ssl.SSLServerSocketFactory
 
+@Suppress("unused")
 object JoozdCommsServerSocketFactory {
     /**
      * This will generate an SSLServerSocket using TLS protocol
@@ -17,14 +18,15 @@ object JoozdCommsServerSocketFactory {
      */
     fun getServerSocketFactory(keyStoreFile: String, keyStorePass: String, keyStoreAlgorithm: String): SSLServerSocketFactory {
         val passPhrase = keyStorePass.toCharArray()
-        val ssf: SSLServerSocketFactory
-        val ctx: SSLContext = SSLContext.getInstance("TLS")
-        val kmf: KeyManagerFactory = KeyManagerFactory.getInstance(keyStoreAlgorithm)
-        val ks: KeyStore = KeyStore.getInstance("JKS")
-        ks.load(FileInputStream(keyStoreFile), passPhrase)
-        kmf.init(ks, passPhrase)
-        ctx.init(kmf.keyManagers, null, null)
-        ssf = ctx.serverSocketFactory
-        return ssf
+        val keyStore = KeyStore.getInstance("JKS").apply{
+            load(FileInputStream(keyStoreFile), passPhrase)
+        }
+        val keyManagerFactory = KeyManagerFactory.getInstance(keyStoreAlgorithm).apply{
+            init(keyStore, passPhrase)
+        }
+        val sslContext: SSLContext = SSLContext.getInstance("TLS").apply{
+            init(keyManagerFactory.keyManagers, null, null)
+        }
+        return sslContext.serverSocketFactory
     }
 }
