@@ -19,6 +19,7 @@
 
 package nl.joozd.comms
 
+import CommsKeywords
 import nl.joozd.serializing.toByteArray
 
 

@@ -19,6 +19,7 @@
 
 package nl.joozd.comms
 
+import CommsKeywords
 import kotlinx.coroutines.*
 import nl.joozd.serializing.intFromBytes
 import nl.joozd.serializing.toByteArray
