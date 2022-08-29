@@ -12,7 +12,7 @@ import java.net.Socket
  * It should be closed after usage, which will close the socket.
  * @param socket: An open socket to be used for communications
  */
-class IOWorker(private val socket: Socket): Closeable {
+class IOWorker(val socket: Socket): Closeable {
     private val outputStream = socket.getOutputStream()
     private val inputStream = BufferedInputStream(socket.getInputStream())
 

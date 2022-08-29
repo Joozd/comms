@@ -1,3 +1,5 @@
+package nl.joozd.comms
+
 import kotlinx.coroutines.*
 import java.io.BufferedInputStream
 import java.io.Closeable
@@ -11,7 +13,7 @@ class P2PSession: CoroutineScope, Closeable {
 
     private var onClosedListener: OnClosedListener? = null
 
-    private var closed = false // closed means this P2PSession has been used and must be thrown out.
+    private var closed = false // closed means this nl.joozd.comms.P2PSession has been used and must be thrown out.
 
     private val full get() = peersCount == 2
 

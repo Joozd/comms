@@ -1,4 +1,4 @@
-/*
+package nl.joozd.comms/*
  *  JoozdLog Pilot's Logbook
  *  Copyright (c) 2020 Joost Welle
  *
@@ -18,9 +18,6 @@
  */
 
 import kotlinx.coroutines.*
-import nl.joozd.comms.CommsResult
-import nl.joozd.comms.Message
-import nl.joozd.comms.Packet
 import nl.joozd.serializing.intFromBytes
 import nl.joozd.serializing.toByteArray
 import nl.joozd.serializing.wrap

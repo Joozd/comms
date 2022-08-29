@@ -1,3 +1,5 @@
+package nl.joozd.comms
+
 object CommsKeywords {
     const val HEADER = "JOOZD"
     const val OK = "OK"
