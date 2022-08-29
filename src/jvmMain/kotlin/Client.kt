@@ -17,10 +17,10 @@
  *
  */
 
-package nl.joozd.comms
-
-import CommsKeywords
 import kotlinx.coroutines.*
+import nl.joozd.comms.CommsResult
+import nl.joozd.comms.Message
+import nl.joozd.comms.Packet
 import nl.joozd.serializing.intFromBytes
 import nl.joozd.serializing.toByteArray
 import nl.joozd.serializing.wrap
@@ -59,7 +59,7 @@ class Client private constructor(
     var alive = false
         private set
 
-    private suspend fun initialize(): Client{
+    private suspend fun initialize(): Client {
         socket?.let{
             alive = sendToServer(Packet(wrap(CommsKeywords.HELLO))).also{
                 println("Handshake result: $it")
