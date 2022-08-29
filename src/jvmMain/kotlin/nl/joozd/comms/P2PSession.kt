@@ -6,6 +6,7 @@ import java.io.Closeable
 import java.net.Socket
 import kotlin.coroutines.CoroutineContext
 
+@Suppress("unused")
 class P2PSession: CoroutineScope, Closeable {
     override val coroutineContext: CoroutineContext = Dispatchers.IO
     private val peers = ArrayList<Socket>(2)
