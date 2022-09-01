@@ -1,4 +1,4 @@
-package nl.joozd.comms/*
+/*
  *  JoozdLog Pilot's Logbook
  *  Copyright (c) 2020 Joost Welle
  *
@@ -16,6 +16,8 @@ package nl.joozd.comms/*
  *      along with this program.  If not, see https://www.gnu.org/licenses
  *
  */
+
+package nl.joozd.comms
 
 import kotlinx.coroutines.*
 import nl.joozd.serializing.intFromBytes
@@ -56,11 +58,9 @@ class Client private constructor(
     var alive = false
         private set
 
-    private suspend fun initialize(): Client {
+    private suspend fun initialize(): Client{
         socket?.let{
-            alive = sendToServer(Packet(wrap(CommsKeywords.HELLO))).also{
-                println("Handshake result: $it")
-            } == CommsResult.OK
+            alive = sendToServer(Packet(wrap(CommsKeywords.HELLO))) == CommsResult.OK
         }
         return this
     }
@@ -202,9 +202,12 @@ class Client private constructor(
 
     companion object{
         const val MAX_MESSAGE_SIZE = Int.MAX_VALUE-1
-        const val BUFFER_SIZE: Int = 65535
+        private const val BUFFER_SIZE: Int = 65535
 
-        //creates a new instance
+        /**
+         * Returns an open instance if it is available
+         * Client will be locked until starting timeOut()
+         */
         suspend fun getInstance(server: String, port: Int, bufferSize: Int = BUFFER_SIZE): Client =
             withContext(Dispatchers.IO) {
                 Client(getServerName(server), port, bufferSize).initialize()

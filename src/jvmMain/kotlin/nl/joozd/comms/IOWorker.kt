@@ -4,6 +4,8 @@ import nl.joozd.serializing.intFromBytes
 import java.io.BufferedInputStream
 import java.io.Closeable
 import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
 import java.net.Socket
 
 /**
@@ -12,20 +14,22 @@ import java.net.Socket
  * It should be closed after usage, which will close the socket.
  * @param socket: An open socket to be used for communications
  */
-class IOWorker(val socket: Socket): Closeable {
-    private val outputStream = socket.getOutputStream()
-    private val inputStream = BufferedInputStream(socket.getInputStream())
-
-    /**
-     * The internet address of the other party
-     */
-    val otherAddress = socket.inetAddress.hostName ?: "Unknown host"
+class IOWorker(
+    private val inputStream: InputStream,
+    private val outputStream: OutputStream,
+    val otherAddress: String = "Unknown Host"
+    ): Closeable {
+    constructor(socket: Socket): this(
+        outputStream = socket.getOutputStream(),
+        inputStream = socket.getInputStream(),
+        otherAddress = socket.inetAddress.hostName ?: "Unknown host"
+    )
 
     /**
      * returns the next input from client
      * @param maxSize: Maximum size of a message to read
      */
-    fun read(maxSize: Int = Int.MAX_VALUE): ByteArray = getInput(inputStream, maxSize)
+    fun read(maxSize: Int = Int.MAX_VALUE): ByteArray = getInput(BufferedInputStream(inputStream), maxSize)
 
 
     /**
@@ -77,7 +81,7 @@ class IOWorker(val socket: Socket): Closeable {
 
 
     override fun close() {
-        socket.close()
+        inputStream.close()
     }
 
     /**
